@@ -6,9 +6,9 @@ import sys
 from typing import Any, Dict, List, Optional, Union
 
 from loguru import logger
-from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, validator
+from pydantic import AnyHttpUrl, BaseSettings, validator
 
-from app.core.logging import InterceptHandler
+from ..core.logging import InterceptHandler
 
 
 class Settings(BaseSettings):
@@ -16,8 +16,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
-    SERVER_NAME: str
-    SERVER_HOST: AnyHttpUrl
+    SERVER_NAME: str = "Poirot-DEV"
+    SERVER_HOST: AnyHttpUrl = "http://localhost"
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
     # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
@@ -40,20 +40,20 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    PROJECT_NAME: str
-    SENTRY_DSN: Optional[HttpUrl] = None
+    PROJECT_NAME: str = "Poirot"
+    # SENTRY_DSN: Optional[HttpUrl] = None
 
-    @validator("SENTRY_DSN", pre=True)
-    def sentry_dsn_can_be_blank(cls, v: str) -> Optional[str]:
-        if len(v) == 0:
-            return None
-        return v
+    # @validator("SENTRY_DSN", pre=True)
+    # def sentry_dsn_can_be_blank(cls, v: str) -> Optional[str]:
+    #     if len(v) == 0:
+    #         return None
+    #     return v
 
-    MYSQL_HOST: str
-    MYSQL_PORT: str
-    MYSQL_USER: str
-    MYSQL_PASSWORD: str
-    MYSQL_DB: str
+    MYSQL_HOST: str = os.environ.get("MYSQL_HOST")
+    MYSQL_PORT: str = os.environ.get("MYSQL_PORT")
+    MYSQL_USER: str = os.environ.get("MYSQL_USER")
+    MYSQL_PASSWORD: str = os.environ.get("MYSQL_PASSWORD")
+    MYSQL_DB: str = os.environ.get("MYSQL_DB", "poirot")
     SQLALCHEMY_DATABASE_URI: Optional[str] = None
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
@@ -74,37 +74,37 @@ class Settings(BaseSettings):
         port = values.get("MYSQL_PORT")
         return f'mysql+pymysql://{user}:{password}@{host}:{port}/{db}?charset=utf8mb4'
 
-    SMTP_TLS: bool = True
-    SMTP_PORT: Optional[int] = None
-    SMTP_HOST: Optional[str] = None
-    SMTP_USER: Optional[str] = None
-    SMTP_PASSWORD: Optional[str] = None
-    EMAILS_FROM_EMAIL: Optional[EmailStr] = None
-    EMAILS_FROM_NAME: Optional[str] = None
+    # SMTP_TLS: bool = True
+    # SMTP_PORT: Optional[int] = None
+    # SMTP_HOST: Optional[str] = None
+    # SMTP_USER: Optional[str] = None
+    # SMTP_PASSWORD: Optional[str] = None
+    # EMAILS_FROM_EMAIL: Optional[EmailStr] = None
+    # EMAILS_FROM_NAME: Optional[str] = None
 
-    @validator("EMAILS_FROM_NAME")
-    def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:
-        if not v:
-            print(values)
-            return values["PROJECT_NAME"]
-        return v
+    # @validator("EMAILS_FROM_NAME")
+    # def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:
+    #     if not v:
+    #         print(values)
+    #         return values["PROJECT_NAME"]
+    #     return v
+    #
+    # EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
+    # EMAIL_TEMPLATES_DIR: str = "/app/app/email-templates/build"
+    # EMAILS_ENABLED: bool = False
 
-    EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
-    EMAIL_TEMPLATES_DIR: str = "/app/app/email-templates/build"
-    EMAILS_ENABLED: bool = False
-
-    @validator("EMAILS_ENABLED", pre=True)
-    def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
-        return bool(
-            values.get("SMTP_HOST")
-            and values.get("SMTP_PORT")
-            and values.get("EMAILS_FROM_EMAIL")
-        )
-
-    EMAIL_TEST_USER: EmailStr = "test@example.com"  # type: ignore
-    FIRST_SUPERUSER: EmailStr
-    FIRST_SUPERUSER_PASSWORD: str
-    USERS_OPEN_REGISTRATION: bool = False
+    # @validator("EMAILS_ENABLED", pre=True)
+    # def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
+    #     return bool(
+    #         values.get("SMTP_HOST")
+    #         and values.get("SMTP_PORT")
+    #         and values.get("EMAILS_FROM_EMAIL")
+    #     )
+    #
+    # EMAIL_TEST_USER: EmailStr = "test@example.com"  # type: ignore
+    # FIRST_SUPERUSER: EmailStr
+    # FIRST_SUPERUSER_PASSWORD: str
+    # USERS_OPEN_REGISTRATION: bool = False
 
     class Config:
         case_sensitive = True
