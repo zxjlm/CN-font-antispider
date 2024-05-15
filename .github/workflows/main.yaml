@@ -22,6 +22,8 @@ jobs:
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: ${{ matrix.poetry-version }}
+      - name: Echo path
+        run: echo $PWD
       - name: Update dependencies
         run: poetry update
       - name: Install dependencies
@@ -48,6 +50,10 @@ jobs:
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: ${{ matrix.poetry-version }}
+      - name: Echo path
+        run: echo $PWD
+      - name: Echo ls
+        run: ls -l
       - name: Update dependencies
         run: poetry update
       - name: Install dependencies
