@@ -10,7 +10,7 @@
 """
 from fastapi import APIRouter, UploadFile
 
-from backend.app.app.utils.ocrs import single_font_to_pic
+from app.utils.ocrs import single_font_to_pic
 
 digit_api_router = APIRouter()
 

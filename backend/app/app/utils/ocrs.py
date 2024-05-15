@@ -10,7 +10,9 @@
 """
 
 import hashlib
-from pathlib import Path
+import pickle
+
+# from pathlib import Path
 
 from fontTools.pens.reportLabPen import ReportLabPen
 # from fontTools.ttLib import TTFont
@@ -27,6 +29,7 @@ from fontTools.ttLib import TTFont
 from PIL import ImageFont, Image, ImageDraw
 import base64
 from io import BytesIO
+import numpy as np
 
 
 def uni_2_png_stream(txt, font, img_size=512):
@@ -160,3 +163,33 @@ def single_font_to_pic(filename, content):
         })
 
     return res_list
+
+
+def ocr_func_for_digit(pil_pics):
+    """
+
+    Args:
+        pil_pics:
+
+    Returns:
+
+    """
+    datas = []
+    for pil in pil_pics:
+        datas.append(convert_img(pil))
+    datas = np.array(datas)
+    n_samples = len(datas)
+    data = datas.reshape((n_samples, -1)) / 255
+    with open('./models/clf_model.pkl', 'rb') as f:
+        clf = pickle.load(f)
+    predicted = clf.predict(data)
+    return list(predicted)
+
+
+def convert_img(img):
+    nimg = np.array(img)
+    ttmp = nimg.tolist()
+    for row in range(len(ttmp)):
+        for col in range(len(ttmp[0])):
+            ttmp[row][col] = np.average(ttmp[row][col])
+    return np.array(ttmp)
