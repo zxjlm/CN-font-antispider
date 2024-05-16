@@ -19,6 +19,7 @@ pytesseract = "^0.3.10"
 python-multipart = "^0.0.9"
 sqlalchemy = "^2.0.30"
 numpy = "^1.20.1"
+pydantic = "1.10.15"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.1"
