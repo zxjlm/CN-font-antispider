@@ -25,7 +25,7 @@ jobs:
       - name: Echo path
         run: echo $PWD
       - name: Update dependencies
-        run: poetry update
+        run: poetry install --with dev
       - name: Install dependencies
         run: poetry install
       - name: Run tests
@@ -55,7 +55,7 @@ jobs:
       - name: Echo ls
         run: ls -l
       - name: Update dependencies
-        run: poetry update
+        run: poetry install --with dev
       - name: Install dependencies
         run: poetry install
       - name: Run flake8
