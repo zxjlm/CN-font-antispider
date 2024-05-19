@@ -23,6 +23,7 @@ async def font_file_cracker(file: UploadFile):
         os.mkdir(base_path)
 
     font_path = os.path.join(base_path, filename)
+    print(font_path)
     with open(font_path, "wb") as f:
         f.write(await file.read())
 
@@ -49,3 +50,4 @@ async def local_cracker(img_b64: str, request: Request):
     return {'raw_out': res,
             'spend_time':
                 round(time.time() - start_time, 2)}
+
